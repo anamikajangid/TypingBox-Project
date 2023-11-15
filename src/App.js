@@ -1,38 +1,24 @@
-import React, { useState } from "react";
-import Signup from "./components/Signup";
-import Login from "./components/Login";
-import Navbar from "./components/Navbar";
-import Tyingbox from "./components/Typingbox";
-import Footer from "./components/Footer";
-
-import "./App.css";
-import "./fonts.css";
+import { GlobalStyle } from "./Styles/global";
+import { ThemeProvider } from "styled-components";
+import { useTheme } from "./Context/ThemeContext";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Route, Routes } from "react-router-dom";
+import HomePage from "./Pages/HomePage";
+import UserPage from "./Pages/UserPage";
 
 function App() {
-  const [showLoginPage, setShowLoginPage] = useState(false);
-  const [showSignupPage, setShowSignupPage] = useState(false);
-
-  const handleIconClick = () => {
-    setShowLoginPage(true);
-    setShowSignupPage(true);
-  };
+  const { theme } = useTheme();
   return (
-    <div className="App">
-      <Navbar onUserIconClick={handleIconClick} />
-      {showLoginPage && (
-        <div className="login-overlay">
-          <Login />
-        </div>
-      )}
-      {showSignupPage && (
-        <div className="login-overlay">
-          <Signup />
-        </div>
-      )}
+    <ThemeProvider theme={theme}>
+      <ToastContainer />
+      <GlobalStyle />
 
-      <Tyingbox />
-      <Footer />
-    </div>
+      <Routes>
+        <Route path="/" element={<HomePage />}></Route>
+        <Route path="/user" element={<UserPage />}></Route>
+      </Routes>
+    </ThemeProvider>
   );
 }
 

@@ -1,57 +1,89 @@
+import { Box, Button, TextField } from "@mui/material";
 import React, { useState } from "react";
+import { useTheme } from "../Context/ThemeContext";
+import { auth } from "../Config/firebase";
+import { toast } from "react-toastify";
+import errorMapping from "../Utilities/errorMapping";
 
-const Login = () => {
+const LoginForm = ({ handleModalClose }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { theme } = useTheme();
 
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
+  const handleSubmit = () => {
+    if (!email || !password) {
+      // alert('fill all details')
+      toast.warning("Please fill all details...");
+    }
+    auth
+      .signInWithEmailAndPassword(email, password)
+      .then((res) => {
+        toast.success("User logged in successfully...");
+        handleModalClose();
+      })
+      .catch((err) => {
+        toast.error(errorMapping[err.code] || "Some error occured");
+        toast.error(err);
+      });
   };
-
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
-
-  const handleLogin = (e) => {
-    e.preventDefault();
-
-    // Perform authentication logic here, e.g., sending a request to a server
-    // Check if the email and password are valid
-    // If valid, redirect to the user's dashboard or perform other actions
-  };
-
   return (
-    <div className="login-page">
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={handleEmailChange}
-            placeholder="Enter your email"
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={handlePasswordChange}
-            placeholder="Enter your password"
-            required
-          />
-        </div>
-
-        <button type="submit">Login</button>
-      </form>
-    </div>
+    <Box
+      p={3}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "20px",
+      }}
+    >
+      <TextField
+        variant="outlined"
+        type="email"
+        label="Enter Email"
+        onChange={(e) => setEmail(e.target.value)}
+        InputLabelProps={{
+          //change color of label
+          style: {
+            color: theme.textColor,
+          },
+        }}
+        inputProps={{
+          //change color of input
+          style: {
+            color: theme.textColor,
+          },
+        }}
+      />
+      <TextField
+        variant="outlined"
+        type="password"
+        label="Enter Password"
+        onChange={(e) => setPassword(e.target.value)}
+        InputLabelProps={{
+          //change color of label
+          style: {
+            color: theme.textColor,
+          },
+        }}
+        inputProps={{
+          //change color of input
+          style: {
+            color: theme.textColor,
+          },
+        }}
+      />
+      <Button
+        variant="contained"
+        size="large"
+        style={{
+          background: theme.textColor,
+          color: theme.background,
+        }}
+        onClick={handleSubmit}
+      >
+        Login
+      </Button>
+    </Box>
   );
 };
 
-export default Login;
+export default LoginForm;

@@ -1,38 +1,65 @@
-import React, { useState } from "react";
-
-import { FaGithub } from "react-icons/fa";
-import { FaLinkedin } from "react-icons/fa";
-import { GrMail } from "react-icons/gr";
-import { FaInstagram } from "react-icons/fa";
+import React from "react";
+import { themeOptions } from "../Utilities/ThemeJSON";
+import Select from "react-select";
+import { useTheme } from "../Context/ThemeContext";
+import GitHubIcon from "@mui/icons-material/GitHub";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import AttachEmailIcon from "@mui/icons-material/AttachEmail";
+import InstagramIcon from "@mui/icons-material/Instagram";
+// https://react-select.com/home  //https://react-select.com/styles
 
 const Footer = () => {
-  const [selectedcolor, setSelectedColor] = useState("black");
-  const handleColorChange = (e) => {
-    setSelectedColor((document.body.style.backgroundColor = e.target.value));
+  const { setTheme, theme } = useTheme();
+
+  const handleChange = (e) => {
+    console.log(e);
+    setTheme(e.value);
+    localStorage.setItem("theme", JSON.stringify(e.value));
   };
   return (
-    <div className="footersection">
-      <div className="icons">
-        <FaGithub size={30} color="white" />
-        <FaLinkedin size={30} color="white" />
-        <GrMail size={30} color="white" />
-        <FaInstagram size={30} color="white" />
+    <div className="footer">
+      <div className="links">
+        <a href="https://github.com/anamikajangid">
+          <GitHubIcon />
+        </a>
+        <a href="https://www.linkedin.com/in/anamika-jangid-a32846178/">
+          <LinkedInIcon />
+        </a>
+        <a href="mailto:anamikajangid12@gmail.com">
+          <AttachEmailIcon />
+        </a>
+        <a href="https://www.instagram.com/">
+          <InstagramIcon />
+        </a>
       </div>
-
-      <div className="colorchange">
-        <select id="themecolor" onChange={handleColorChange}>
-          <option value="black">Black</option>
-          <option value="lightblue">Light-Blue</option>
-          <option value="green">Green</option>
-          <option value="lightgray">Gray</option>
-          <option value="lightpink">Light-Pink</option>
-        </select>
-        {/* <div
-          className="themecontent"
-          style={{ backgroundColor: selectedcolor }}
-        >
-          <p>Hello my name is Anamika</p>
-        </div> */}
+      <div className="themeButton">
+        <Select
+          onChange={handleChange}
+          options={themeOptions}
+          menuPlacement="top"
+          defaultValue={{ label: theme.label, value: theme }}
+          styles={{
+            control: (baseStyles, state) => ({
+              ...baseStyles,
+              backgroundColor: "white",
+            }),
+            menu: (baseStyles, state) => ({
+              ...baseStyles,
+              backgroundColor: theme.background,
+              borderColor: theme.textColor,
+            }),
+            option: (baseStyles, state) => {
+              return {
+                ...baseStyles,
+                backgroundColor: state.isFocused
+                  ? theme.background
+                  : theme.textColor,
+                color: state.isFocused ? theme.textColor : theme.background,
+                cursor: "pointer",
+              };
+            },
+          }}
+        />
       </div>
     </div>
   );
